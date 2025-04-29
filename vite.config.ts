@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
         host: "::",
         port: 8080,
     },
-    base: 'MedStock-clinic-control',
+    base: '/MedStock-clinic-control/',
     plugins: [
         react(),
         mode === 'development' &&
