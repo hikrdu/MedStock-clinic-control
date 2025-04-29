@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://192.168.0.9:5000/api/products";
+// const API_BASE_URL = "http://192.168.0.9:5000/api/products";
+const API_BASE_URL = "https://medstock-server.onrender.com";
 
 export const productApi = {
     // Get all products
