@@ -17,7 +17,7 @@ const App = () => (
         <TooltipProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
+            <BrowserRouter basename="/MedStock-clinic-control">
                 <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/add-product" element={<AddProduct />} />
