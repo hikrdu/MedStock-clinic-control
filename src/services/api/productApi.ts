@@ -1,7 +1,7 @@
-import { API_BASE_URL } from "@/lib/utils";
+import { getApiBaseUrl } from "@/lib/utils";
 import axios from "axios";
 
-const ENDPOINT = `${API_BASE_URL}/products`;
+const ENDPOINT = `${getApiBaseUrl()}/products`;
 
 export const productApi = {
     // Get all products
