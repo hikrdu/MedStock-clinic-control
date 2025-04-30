@@ -3,7 +3,8 @@ import * as api from "./utilsApi";
 
 export const utilService = {
     getUnities: async (): Promise<Unity[]> => {
-        return await api.utilsApi.getUnities();
+        const unities = await api.utilsApi.getUnities();
+        return unities.sort((a, b) => a.description.localeCompare(b.description));
     },
 
     createUnity: async (data: { description: string, abreviation: string }): Promise<Unity> => {
@@ -21,7 +22,8 @@ export const utilService = {
     },
 
     getSectors: async (): Promise<Sector[]> => {
-        return await api.utilsApi.getSectors();
+        const sectors = await api.utilsApi.getSectors();
+        return sectors.sort((a, b) => a.description.localeCompare(b.description));
     },
 
     createSector: async (data: { description: string }): Promise<Sector> => {

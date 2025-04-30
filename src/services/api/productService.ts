@@ -2,9 +2,10 @@ import { Product, ProductStock, } from "./models/Product";
 import * as api from "./productApi";
 
 export const productService = {
-    // Get all products
+    // Get all products ordered by name ascending
     getProducts: async (): Promise<Product[]> => {
-        return await api.productApi.getProducts();
+        const products = await api.productApi.getProducts();
+        return products.sort((a, b) => a.name.localeCompare(b.name));
     },
 
     // Get a product by ID
