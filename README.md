@@ -1,4 +1,4 @@
-# MedStock - Clinic Inventory Control System
+# Clinic Inventory Control System
 
 ## About
 
