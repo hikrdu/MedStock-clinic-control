@@ -1,9 +1,6 @@
 import { Product, ProductStock, } from "./models/Product";
 import * as api from "./productApi";
 
-// Simulate API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const productService = {
     // Get all products
     getProducts: async (): Promise<Product[]> => {

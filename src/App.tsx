@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import MovementsPage from "./pages/MovementsPage";
 import NotFound from "./pages/NotFound";
 import ReportsPage from "./pages/ReportsPage";
+import UtilsPage from "./pages/UtilsPage";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
                     <Route path="/edit-product/:_id" element={<EditProduct />} />
                     <Route path="/reports" element={<ReportsPage />} />
                     <Route path="/movements" element={<MovementsPage />} />
+                    <Route path="/utils" element={<UtilsPage />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>

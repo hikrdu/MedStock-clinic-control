@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Database, FileText, Package, PackagePlus } from "lucide-react";
+import { Database, FileText, Package, PackagePlus, Settings2 } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -63,6 +63,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         icon={<Database className="h-5 w-5" />}
                         label="Movimentações"
                         active={currentPath === "/movements"}
+                    />
+                    <NavItem
+                        to="/utils"
+                        icon={<Settings2 className="h-5 w-5" />}
+                        label="Utilitários"
+                        active={currentPath === "/utils"}
                     />
                 </nav>
 

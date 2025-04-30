@@ -4,7 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { Sector, Unity } from "@/services/api/models/Utis";
 import { productService } from "@/services/api/productService";
+import { utilService } from "@/services/api/utilService";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -13,6 +15,8 @@ const ProductForm: React.FC = () => {
     const navigate = useNavigate();
     const { toast } = useToast();
     const isEditing = !!_id;
+    const [sectors, setSectors] = useState<Sector[]>([]);
+    const [unities, setUnities] = useState<Unity[]>([]);
 
     const [formData, setFormData] = useState<{
         description: string;
@@ -34,10 +38,18 @@ const ProductForm: React.FC = () => {
     const [fetchingProduct, setFetchingProduct] = useState(isEditing);
 
     useEffect(() => {
+        fetchUtils();
         if (isEditing) {
             fetchProduct();
         }
     }, [_id]);
+    const fetchUtils = async () => {
+
+        const sectors = await utilService.getSectors();
+        const unities = await utilService.getUnities();
+        setSectors(sectors);
+        setUnities(unities);
+    }
 
     const fetchProduct = async () => {
         try {
@@ -215,14 +227,11 @@ const ProductForm: React.FC = () => {
                                         <SelectValue placeholder="Selecione a unidade" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="bl">Bloco (bl)</SelectItem>
-                                        <SelectItem value="cx">Caixa (cx)</SelectItem>
-                                        <SelectItem value="fd">Fardo (fd)</SelectItem>
-                                        <SelectItem value="pct">Pacote (pct)</SelectItem>
-                                        <SelectItem value="rl">Rolo (rl)</SelectItem>
-                                        <SelectItem value="sg">Seringa (sg)</SelectItem>
-                                        <SelectItem value="un">Unidade (un)</SelectItem>
-                                        <SelectItem value="sd">Sob Demanda (sd)</SelectItem>
+                                        {unities.map((unity) => (
+                                            <SelectItem key={unity._id} value={unity.abreviation}>
+                                                {unity.description} ({unity.abreviation})
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -274,11 +283,11 @@ const ProductForm: React.FC = () => {
                                         <SelectValue placeholder="Selecione o setor" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="Área Médica">Área Médica</SelectItem>
-                                        <SelectItem value="Cozinha">Cozinha</SelectItem>
-                                        <SelectItem value="Escritório">Escritório</SelectItem>
-                                        <SelectItem value="Limpeza">Limpeza</SelectItem>
-                                        <SelectItem value="Odontologia">Odontologia</SelectItem>
+                                        {sectors.map((sector) => (
+                                            <SelectItem key={sector._id} value={sector.description}>
+                                                {sector.description}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>

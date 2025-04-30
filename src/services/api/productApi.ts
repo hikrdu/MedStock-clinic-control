@@ -1,37 +1,37 @@
+import { API_BASE_URL } from "@/lib/utils";
 import axios from "axios";
 
-// const API_BASE_URL = "http://192.168.0.9:5000/api/products";
-const API_BASE_URL = "https://medstock-server.onrender.com/api/products";
+const ENDPOINT = `${API_BASE_URL}/products`;
 
 export const productApi = {
     // Get all products
     getProducts: async (search?: string) => {
         const params = search ? { params: { search } } : {};
-        const response = await axios.get(API_BASE_URL, params);
+        const response = await axios.get(ENDPOINT, params);
         return response.data;
     },
 
     // Get a product by ID
     getProductById: async (id: string) => {
-        const response = await axios.get(`${API_BASE_URL}/${id}`);
+        const response = await axios.get(`${ENDPOINT}/${id}`);
         return response.data;
     },
 
     // Create a new product
     createProduct: async (product: any) => {
-        const response = await axios.post(API_BASE_URL, product);
+        const response = await axios.post(ENDPOINT, product);
         return response.data;
     },
 
     // Update a product
     updateProduct: async (id: string, product: any) => {
-        const response = await axios.put(`${API_BASE_URL}/${id}`, product);
+        const response = await axios.put(`${ENDPOINT}/${id}`, product);
         return response.data;
     },
 
     // Delete a product
     deleteProduct: async (id: string) => {
-        const response = await axios.delete(`${API_BASE_URL}/${id}`);
+        const response = await axios.delete(`${ENDPOINT}/${id}`);
         return response.data;
     },
 
@@ -45,21 +45,21 @@ export const productApi = {
     getStockMovements: async (productId?: string) => {
         // If productId is provided, use it in the path; otherwise, call the base endpoint
         const url = productId
-            ? `${API_BASE_URL}/${productId}/stock-movements`
-            : `${API_BASE_URL}/""/stock-movements`;
+            ? `${ENDPOINT}/${productId}/stock-movements`
+            : `${ENDPOINT}/""/stock-movements`;
         const response = await axios.get(url);
         return response.data;
     },
 
     // Add stock movement (in/out)
     addStockMovement: async (movement: any) => {
-        const response = await axios.post(`${API_BASE_URL}/stock-movements`, movement);
+        const response = await axios.post(`${ENDPOINT}/stock-movements`, movement);
         return response.data;
     },
 
     // Get purchase report data (products below ideal quantity)
     getPurchaseReportData: async () => {
-        const response = await axios.get(`${API_BASE_URL}/report/monthly`);
+        const response = await axios.get(`${ENDPOINT}/report/monthly`);
         return response.data;
     }
 
