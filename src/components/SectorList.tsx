@@ -166,11 +166,6 @@ const SectorList: React.FC = () => {
                                     {sectors.map((sector) => (
                                         <TableRow key={sector._id}>
                                             <TableCell className="font-medium">{sector.description}</TableCell>
-                                            <TableCell>
-                                                {sector.description}
-
-                                            </TableCell>
-
                                             <TableCell className="text-right">
 
 
