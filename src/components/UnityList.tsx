@@ -169,6 +169,8 @@ const UnityList: React.FC = () => {
                                         <TableHead>Descrição</TableHead>
                                         <TableHead>Unidade</TableHead>
 
+<TableHead>Abreviação</TableHead>
+
                                         <TableHead className="text-right">Ações</TableHead>
                                     </TableRow>
                                 </TableHeader>
