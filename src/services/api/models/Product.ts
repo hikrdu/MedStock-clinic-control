@@ -3,7 +3,7 @@ export interface Product {
     description: string;
     unit: string;
     quantity: number;
-    expirationDate?: Date;
+    expirationDate?: string;
     monthlyIdealQuantity: number;
     sector: string;
     lastUpdated: Date;
