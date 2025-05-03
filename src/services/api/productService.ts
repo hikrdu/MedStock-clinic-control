@@ -5,8 +5,8 @@ export const productService = {
     // Get all products ordered by name ascending
     getProducts: async (): Promise<Product[]> => {
         const products = await api.productApi.getProducts();
-        // return products.sort((a, b) => a.name.localeCompare(b.name));
-       return products;
+        return products.sort((a, b) => a.description.localeCompare(b.description));
+       // return products;
     },
 
     // Get a product by ID
