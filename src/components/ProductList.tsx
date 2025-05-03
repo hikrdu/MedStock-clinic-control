@@ -137,9 +137,9 @@ const ProductList: React.FC = () => {
         }
     };
 
-    const formatDate = (date?: Date) => {
+    const formatDate = (date?: string) => {
         if (!date) return "N/A";
-        return new Date(date).toLocaleDateString("pt-BR");
+        return date;
     };
 
     return (
