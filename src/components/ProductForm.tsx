@@ -61,8 +61,8 @@ const ProductForm: React.FC = () => {
                     unit: product.unit,
                     quantity: product.quantity,
                     expirationDate: product.expirationDate
-                        ? new Date(product.expirationDate).toISOString().substring(0, 10)
-                        : "",
+                        ? product.expirationDate
+                        : "N/A",
                     monthlyIdealQuantity: product.monthlyIdealQuantity,
                     sector: product.sector,
                 });
@@ -133,7 +133,7 @@ const ProductForm: React.FC = () => {
                 description: formData.description,
                 unit: formData.unit,
                 quantity: formData.quantity,
-                expirationDate: formData.expirationDate ? new Date(formData.expirationDate) : undefined,
+                expirationDate: formData.expirationDate,
                 monthlyIdealQuantity: formData.monthlyIdealQuantity,
                 sector: formData.sector,
             };
