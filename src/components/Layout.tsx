@@ -1,27 +1,58 @@
 import { cn } from "@/lib/utils";
-import { Database, FileText, Package, PackagePlus, Settings2 } from "lucide-react";
-import React from "react";
+import { ArrowDownUpIcon, FileText, Package, Package2, PackagePlus, Settings2, ShoppingCart } from "lucide-react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 interface NavItemProps {
-    to: string;
+    to?: string;
     icon: React.ReactNode;
     label: string;
     active: boolean;
+    children?: React.ReactNode;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ to, icon, label, active }) => (
-    <Link
-        to={to}
-        className={cn(
-            "flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-all hover:bg-accent",
-            active ? "bg-accent text-accent-foreground" : "text-muted-foreground"
-        )}
-    >
-        {icon}
-        <span>{label}</span>
-    </Link>
-);
+const NavItem: React.FC<NavItemProps> = ({ to, icon, label, active, children }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleToggle = () => {
+        if (children) {
+            setIsOpen(!isOpen);
+        }
+    };
+
+    return (
+        <div>
+            {children ? (
+                <div
+                    onClick={handleToggle}
+                    className={cn(
+                        "flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-all hover:bg-accent cursor-pointer",
+                        active ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+                    )}
+                >
+                    {icon}
+                    <span>{label}</span>
+                </div>
+            ) : (
+                <Link
+                    to={to || "#"}
+                    className={cn(
+                        "flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-all hover:bg-accent",
+                        active ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+                    )}
+                >
+                    {icon}
+                    <span>{label}</span>
+                </Link>
+            )}
+            {isOpen && children && (
+                <div className="ml-6 mt-2 space-y-1">
+                    {children}
+                </div>
+            )}
+        </div>
+    );
+};
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -34,7 +65,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className="flex min-h-screen">
             {/* Sidebar */}
-            <div className="hidden w-64 flex-col border-r bg-sidebar p-4 md:flex">
+            <div className="hidden w-64 flex-col border-r bg-sidebar p-4 md:flex sidebar">
                 <div className="mb-8 flex items-center">
                     <span className="text-2xl font-bold text-clinic-primary">MedStock</span>
                 </div>
@@ -53,14 +84,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         active={currentPath === "/add-product"}
                     />
                     <NavItem
-                        to="/reports"
                         icon={<FileText className="h-5 w-5" />}
                         label="Relatórios"
-                        active={currentPath === "/reports"}
-                    />
+                        active={currentPath.startsWith("/reports")}
+                    >
+                        <NavItem
+                            to="/reports/inventory"
+                            icon={<Package2 className="h-4 w-4" />}
+                            label="Estoque"
+                            active={currentPath === "/reports/inventory"}
+                        />
+                        <NavItem
+                            to="/reports/purchases"
+                            icon={<ShoppingCart className="h-4 w-4" />}
+                            label="Compras"
+                            active={currentPath === "/reports/purchases"}
+                        />
+                    </NavItem>
                     <NavItem
                         to="/movements"
-                        icon={<Database className="h-5 w-5" />}
+                        icon={<ArrowDownUpIcon className="h-5 w-5" />}
                         label="Movimentações"
                         active={currentPath === "/movements"}
                     />
