@@ -6,7 +6,7 @@ export const productService = {
     getProducts: async (): Promise<Product[]> => {
         const products = await api.productApi.getProducts();
         return products.sort((a, b) => a.description.localeCompare(b.description));
-       // return products;
+        // return products;
     },
 
     // Get a product by ID
@@ -65,7 +65,7 @@ export const productService = {
             _id: Date.now().toString()
         };
 
-        await api.productApi.addStockMovement(newMovement);
+        await api.productApi.addStockMovement(movement.productId, newMovement);
 
         const productData = await api.productApi.getProducts();
         const product = productData.find(p => p._id === movement.productId);

@@ -52,8 +52,9 @@ export const productApi = {
     },
 
     // Add stock movement (in/out)
-    addStockMovement: async (movement: any) => {
-        const response = await axios.post(`${ENDPOINT}/stock-movements`, movement);
+    addStockMovement: async (productId: string, movement: any) => {
+        // productId is required as per the route definition
+        const response = await axios.post(`${ENDPOINT}/${productId}/stock-movements`, movement);
         return response.data;
     },
 
