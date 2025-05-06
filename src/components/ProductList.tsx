@@ -14,14 +14,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { useProductCache } from "@/contexts/ProductCacheContext";
 import { Product } from "@/services/api/models/Product";
 import { productService } from "@/services/api/productService";
-import { Edit, Package, Plus, Search, Trash } from "lucide-react";
+import { Edit, Package, Plus, Search, Trash, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ProductList: React.FC = () => {
     const { products, loading, fetchProducts, invalidateCache, setProducts } = useProductCache();
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState(() => localStorage.getItem("searchTerm") || "");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [stockDialogOpen, setStockDialogOpen] = useState(false);
     const [stockQuantity, setStockQuantity] = useState(0);
@@ -47,6 +47,7 @@ const ProductList: React.FC = () => {
             );
             setFilteredProducts(filtered);
         }
+        localStorage.setItem("searchTerm", searchTerm);
     }, [searchTerm, products]);
 
     const handleAddProduct = () => {
@@ -129,6 +130,11 @@ const ProductList: React.FC = () => {
         return date;
     };
 
+    const handleClearFilter = () => {
+        setSearchTerm("");
+        localStorage.removeItem("searchTerm");
+    };
+
     return (
         <>
             <div className="mb-6 flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
@@ -149,7 +155,7 @@ const ProductList: React.FC = () => {
                     <CardTitle>Buscar Produtos</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="relative">
+                    <div className="relative flex items-center">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="search"
@@ -158,6 +164,17 @@ const ProductList: React.FC = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
+                        {searchTerm && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="ml-2"
+                                onClick={handleClearFilter}
+                            >
+                                <X className="h-4 w-4" />
+                                Limpar
+                            </Button>
+                        )}
                     </div>
                 </CardContent>
             </Card>
