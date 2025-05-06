@@ -161,7 +161,7 @@ const ProductForm: React.FC = () => {
                 sector: "",
             });
 
-            // navigate("/");
+            if (isEditing) { navigate("/"); }
         } catch (error) {
             console.error("Failed to save product:", error);
             toast({
