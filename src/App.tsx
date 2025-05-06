@@ -1,6 +1,7 @@
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ProductCacheProvider } from "@/contexts/ProductCacheContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AddProduct from "./pages/AddProduct";
@@ -19,15 +20,17 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter basename="/MedStock-clinic-control">
-                <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/add-product" element={<AddProduct />} />
-                    <Route path="/edit-product/:_id" element={<EditProduct />} />
-                    <Route path="/reports/:type" element={<ReportsPage />} />
-                    <Route path="/movements" element={<MovementsPage />} />
-                    <Route path="/utils" element={<UtilsPage />} />
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
+                <ProductCacheProvider>
+                    <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/add-product" element={<AddProduct />} />
+                        <Route path="/edit-product/:_id" element={<EditProduct />} />
+                        <Route path="/reports/:type" element={<ReportsPage />} />
+                        <Route path="/movements" element={<MovementsPage />} />
+                        <Route path="/utils" element={<UtilsPage />} />
+                        <Route path="*" element={<NotFound />} />
+                    </Routes>
+                </ProductCacheProvider>
             </BrowserRouter>
         </TooltipProvider>
     </QueryClientProvider>

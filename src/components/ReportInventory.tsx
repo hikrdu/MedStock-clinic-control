@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
-import { productService } from "@/services/api/productService";
+import { useProductCache } from "@/contexts/ProductCacheContext";
 import { Download, FileText, Printer } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
@@ -15,17 +15,26 @@ interface ReportItem {
 }
 
 const ReportInventory: React.FC = () => {
+    const { products, loading, fetchProducts } = useProductCache();
     const [reportData, setReportData] = useState<ReportItem[]>([]);
     const [filteredData, setFilteredData] = useState<ReportItem[]>([]);
-    const [loading, setLoading] = useState(false);
     const [selectedSector, setSelectedSector] = useState<string>("all");
     const [sectors, setSectors] = useState<string[]>([]);
 
     const { toast } = useToast();
 
     useEffect(() => {
-        fetchReportData();
-    }, []);
+        fetchProducts();
+    }, [fetchProducts]);
+
+    useEffect(() => {
+        setReportData(products);
+        setFilteredData(products);
+
+        // Extract unique sectors
+        const uniqueSectors = Array.from(new Set(products.map(item => item.sector)));
+        setSectors(uniqueSectors);
+    }, [products]);
 
     useEffect(() => {
         if (selectedSector === "all") {
@@ -34,28 +43,6 @@ const ReportInventory: React.FC = () => {
             setFilteredData(reportData.filter(item => item.sector === selectedSector));
         }
     }, [selectedSector, reportData]);
-
-    const fetchReportData = async () => {
-        try {
-            setLoading(true);
-            const data = await productService.getProducts();
-            setReportData(data);
-            setFilteredData(data);
-
-            // Extract unique sectors
-            const uniqueSectors = Array.from(new Set(data.map(item => item.sector)));
-            setSectors(uniqueSectors);
-        } catch (error) {
-            console.error("Failed to fetch report data:", error);
-            toast({
-                title: "Erro",
-                description: "Não foi possível carregar os dados do relatório.",
-                variant: "destructive",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handlePrintReport = () => {
         const sidebar = document.querySelector(".sidebar") as HTMLElement | null;

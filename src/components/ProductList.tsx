@@ -11,6 +11,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
+import { useProductCache } from "@/contexts/ProductCacheContext";
 import { Product } from "@/services/api/models/Product";
 import { productService } from "@/services/api/productService";
 import { Edit, Package, Plus, Search, Trash } from "lucide-react";
@@ -18,10 +19,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ProductList: React.FC = () => {
-    const [products, setProducts] = useState<Product[]>([]);
+    const { products, loading, fetchProducts, invalidateCache, setProducts } = useProductCache();
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [loading, setLoading] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [stockDialogOpen, setStockDialogOpen] = useState(false);
     const [stockQuantity, setStockQuantity] = useState(0);
@@ -33,9 +33,10 @@ const ProductList: React.FC = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [fetchProducts]);
 
     useEffect(() => {
+        if (!products) return;
         if (searchTerm.trim() === "") {
             setFilteredProducts(products);
         } else {
@@ -48,29 +49,13 @@ const ProductList: React.FC = () => {
         }
     }, [searchTerm, products]);
 
-    const fetchProducts = async () => {
-        try {
-            setLoading(true);
-            const data = await productService.getProducts();
-            setProducts(data);
-            setFilteredProducts(data);
-        } catch (error) {
-            console.error("Failed to fetch products:", error);
-            toast({
-                title: "Erro",
-                description: "Não foi possível carregar os produtos.",
-                variant: "destructive",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleAddProduct = () => {
+        invalidateCache();
         navigate("/add-product");
     };
 
     const handleEditProduct = (product: Product) => {
+        invalidateCache();
         navigate(`/edit-product/${product._id}`);
     };
 
@@ -82,7 +67,8 @@ const ProductList: React.FC = () => {
                     title: "Sucesso",
                     description: "Produto removido com sucesso.",
                 });
-                fetchProducts();
+                invalidateCache();
+                await fetchProducts();
             }
         } catch (error) {
             console.error("Failed to delete product:", error);
@@ -126,7 +112,8 @@ const ProductList: React.FC = () => {
                 description: `${stockType === "IN" ? "Entrada" : "Saída"} registrada com sucesso.`,
             });
             setStockDialogOpen(false);
-            fetchProducts();
+            invalidateCache();
+            await fetchProducts();
         } catch (error) {
             console.error("Failed to add stock movement:", error);
             toast({
