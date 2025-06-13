@@ -14,7 +14,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useProductCache } from "@/contexts/ProductCacheContext";
 import { Product } from "@/services/api/models/Product";
 import { productService } from "@/services/api/productService";
-import { Edit, Package, Plus, Search, Trash, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Edit, Package, Plus, Search, Trash, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -27,9 +27,24 @@ const ProductList: React.FC = () => {
     const [stockQuantity, setStockQuantity] = useState(0);
     const [stockType, setStockType] = useState<"IN" | "OUT">("IN");
     const [stockNotes, setStockNotes] = useState("");
+    const [sortBy, setSortBy] = useState<"description" | "sector">("description");
+    const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
     const navigate = useNavigate();
     const { toast } = useToast();
+
+    const sortProducts = (products: Product[], by: "description" | "sector", direction: "asc" | "desc") => {
+        const sorted = [...products].sort((a, b) => {
+            const aValue = a[by].toLowerCase();
+            const bValue = b[by].toLowerCase();
+            if (direction === "asc") {
+                return aValue.localeCompare(bValue);
+            } else {
+                return bValue.localeCompare(aValue);
+            }
+        });
+        return sorted;
+    };
 
     useEffect(() => {
         fetchProducts();
@@ -37,18 +52,28 @@ const ProductList: React.FC = () => {
 
     useEffect(() => {
         if (!products) return;
-        if (searchTerm.trim() === "") {
-            setFilteredProducts(products);
-        } else {
-            const filtered = products.filter(
+        let filtered = products;
+        if (searchTerm.trim() !== "") {
+            filtered = products.filter(
                 (product) =>
                     product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     product.sector.toLowerCase().includes(searchTerm.toLowerCase())
             );
-            setFilteredProducts(filtered);
         }
+        const sorted = sortProducts(filtered, sortBy, sortDirection);
+        setFilteredProducts(sorted);
         localStorage.setItem("searchTerm", searchTerm);
-    }, [searchTerm, products]);
+    }, [searchTerm, products, sortBy, sortDirection]);
+
+    const handleSort = (by: "description" | "sector") => {
+        if (sortBy === by) {
+            setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+        } else {
+            setSortBy(by);
+            setSortDirection("asc");
+        }
+    };
+
 
     const handleAddProduct = () => {
         invalidateCache();
@@ -178,7 +203,6 @@ const ProductList: React.FC = () => {
                     </div>
                 </CardContent>
             </Card>
-
             <Card>
                 <CardContent className="pt-6">
                     {loading ? (
@@ -201,10 +225,34 @@ const ProductList: React.FC = () => {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Descrição</TableHead>
+                                        <TableHead
+                                            className="cursor-pointer select-none"
+                                            onClick={() => handleSort("description")}
+                                        >
+                                            Descrição{" "}
+                                            {sortBy === "description" && (
+                                                sortDirection === "asc" ? (
+                                                    <ChevronUp className="inline h-4 w-4" />
+                                                ) : (
+                                                    <ChevronDown className="inline h-4 w-4" />
+                                                )
+                                            )}
+                                        </TableHead>
                                         <TableHead>Estoque</TableHead>
                                         <TableHead>Validade</TableHead>
-                                        <TableHead>Setor</TableHead>
+                                        <TableHead
+                                            className="cursor-pointer select-none"
+                                            onClick={() => handleSort("sector")}
+                                        >
+                                            Setor{" "}
+                                            {sortBy === "sector" && (
+                                                sortDirection === "asc" ? (
+                                                    <ChevronUp className="inline h-4 w-4" />
+                                                ) : (
+                                                    <ChevronDown className="inline h-4 w-4" />
+                                                )
+                                            )}
+                                        </TableHead>
                                         <TableHead className="text-right">Ações</TableHead>
                                     </TableRow>
                                 </TableHeader>
